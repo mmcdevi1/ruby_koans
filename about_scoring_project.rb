@@ -31,18 +31,23 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 
 def score(dice)
   points = 0
-  dice.each_with_index do |element, index|
-    case 
-    when dice[index] == 1 && dice[index + 1] == 1 && dice[index + 2] == 1
-      points += 1000
-    when dice.empty?
-      points += 0
-    when element == 5
-      points += 50
-    when element == 1
-      points += 100
+
+  # For set of 1's
+  dice_count_for_1 = dice.count(1) - dice.count(1) % 3
+  points += 1000 * ( dice_count_for_1 ) / 3
+
+  # For single 1's
+  points += dice.count(1) % 3 * 100
+
+  # For single 5's
+  points += dice.count(5) % 3 * 50
+
+  [2,3,4,5,6].each do |element|
+    if dice.count(element) >= 3
+      points += 100 * element * (dice.count(element) - dice.count(element) % 3) / 3
     end
   end
+
   points
 end
 
